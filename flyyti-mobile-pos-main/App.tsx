@@ -246,14 +246,23 @@ const Layout: React.FC<{ children: React.ReactNode, settings: AppSettings | null
   );
 };
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode, settings: AppSettings | null }> = ({ children, settings }) => {
-  const location = useLocation();
-  // السماح بفتح شاشة الزبون بدون تسجيل دخول إذا كانت مفتوحة في نافذة أخرى
-  if (location.pathname === '/customer-view') return <>{children}</>;
-
-  if (settings && !settings.login_protection_enabled) return <>{children}</>;
-  const loggedUser = sessionStorage.getItem('flyyti_user');
-  if (!loggedUser) return <Navigate to="/login" replace />;
+const ProtectedRoute: React.FC<{ children: React.ReactNode, settings: AppSettings | null }> = ({ children }) => {
+  const [status, setStatus] = useState<'checking'|'allowed'|'denied'>('checking');
+  useEffect(() => {
+    let alive = true;
+    const check = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!alive) return;
+      if (!user) { setStatus('denied'); return; }
+      const { data, error } = await supabase.rpc('is_store_admin');
+      if (alive) setStatus(!error && data === true ? 'allowed' : 'denied');
+    };
+    void check();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => { if (alive) { setStatus('checking'); void check(); } });
+    return () => { alive = false; subscription.unsubscribe(); };
+  }, []);
+  if (status === 'checking') return <div dir="rtl" className="min-h-screen flex items-center justify-center">جارٍ التحقق من الدخول...</div>;
+  if (status === 'denied') return <Navigate to="/login" replace />;
   return <>{children}</>;
 };
 
@@ -290,10 +299,14 @@ const App: React.FC = () => {
 
   const fetchSettings = useCallback(async () => {
     try {
-      const { data, error } = await supabase.from('settings').select('*').eq('id', 1).single();
-      if (!error) setSettings(data);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setSettings(null); return; }
+      const { data: allowed } = await supabase.rpc('is_store_admin');
+      if (allowed !== true) { setSettings(null); return; }
+      const { data, error } = await supabase.from('settings').select('*').eq('id', 1).maybeSingle();
+      if (!error && data) setSettings(data);
     } catch (err) { console.error(err); }
-    setLoading(false);
+    finally { setLoading(false); }
   }, []);
 
   useEffect(() => {

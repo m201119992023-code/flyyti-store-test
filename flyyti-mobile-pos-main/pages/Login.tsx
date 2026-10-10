@@ -13,7 +13,7 @@ const FlyytiLogo = ({ className = "w-20 h-20" }: { className?: string }) => (
 );
 
 const Login: React.FC<{ onLoginSuccess: () => void }> = ({ onLoginSuccess }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,26 +25,15 @@ const Login: React.FC<{ onLoginSuccess: () => void }> = ({ onLoginSuccess }) => 
     setError('');
 
     try {
-      const { data, error: fetchError } = await supabase
-        .from('settings')
-        .select('username, password')
-        .eq('id', 1)
-        .single();
-
-      if (fetchError) {
-        setError('حدث خطأ في الاتصال بقاعدة البيانات');
-        setLoading(false);
-        return;
+      const { data, error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+      if (authError || !data.user) { setError('البريد الإلكتروني أو كلمة المرور غير صحيحة.'); return; }
+      const { data: allowed, error: roleError } = await supabase.rpc('is_store_admin');
+      if (roleError || allowed !== true) {
+        await supabase.auth.signOut();
+        setError('الحساب لا يملك صلاحية مدير المتجر.'); return;
       }
-
-      if (data.username === username && data.password === password) {
-        // استخدام sessionStorage بدلاً من localStorage لطلب تسجيل الدخول في كل مرة يتم فتح البرنامج
-        sessionStorage.setItem('flyyti_user', username);
-        onLoginSuccess();
-        navigate('/');
-      } else {
-        setError('اسم المستخدم أو كلمة المرور غير صحيحة');
-      }
+      onLoginSuccess();
+      navigate('/', { replace: true });
     } catch (err) {
       setError('خطأ غير متوقع');
     } finally {
@@ -80,15 +69,17 @@ const Login: React.FC<{ onLoginSuccess: () => void }> = ({ onLoginSuccess }) => 
             )}
 
             <div className="space-y-2">
-              <label className="text-xs font-black text-slate-500 mr-1 uppercase tracking-widest">اسم المستخدم</label>
+              <label className="text-xs font-black text-slate-500 mr-1 uppercase tracking-widest">البريد الإلكتروني</label>
               <div className="relative group">
                 <input
-                  type="text"
+                  type="email"
+                  autoComplete="username"
+                  dir="ltr"
                   required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-4 pr-12 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-[#0f172a] focus:bg-white transition-all outline-none font-bold text-slate-900 placeholder:text-slate-300"
-                  placeholder="أدخل اسم المستخدم"
+                  placeholder="البريد الإلكتروني لحساب Supabase"
                 />
                 <User className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#0f172a] transition-colors" size={20} />
               </div>

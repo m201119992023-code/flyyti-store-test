@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route, Navigate, Link, useLocation } from 'react-ro
 import { 
   LayoutDashboard, 
   ShoppingCart, 
+  ShoppingBag,
   Package, 
   Tags, 
   Wallet, 

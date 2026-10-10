@@ -26,9 +26,15 @@ const Login: React.FC<{ onLoginSuccess: () => void }> = ({ onLoginSuccess }) => 
 
     try {
       const { data, error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-      if (authError || !data.user) { setError('البريد الإلكتروني أو كلمة المرور غير صحيحة.'); return; }
+      if (authError || !data.user) {
+        console.error('Supabase sign-in:', authError?.message, authError?.code);
+        const code = authError?.code;
+        setError(code === 'email_not_confirmed' ? 'البريد الإلكتروني غير مؤكد. افتح Supabase ← Authentication ← Users وتأكد من تأكيد الحساب.' : code === 'invalid_credentials' ? 'بيانات الدخول غير صحيحة. استخدم البريد وكلمة المرور المسجلين في Authentication ← Users، وليس بيانات جدول settings.' : 'تعذّر تسجيل الدخول: ' + (authError?.message || 'تحقق من إعدادات حساب Supabase.'));
+        return;
+      }
       const { data: allowed, error: roleError } = await supabase.rpc('is_store_admin');
       if (roleError || allowed !== true) {
+        console.error('Store admin authorization:', roleError?.message || 'User is not an admin');
         await supabase.auth.signOut();
         setError('الحساب لا يملك صلاحية مدير المتجر.'); return;
       }

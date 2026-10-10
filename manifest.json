@@ -1,15 +1,14 @@
-
 {
   "short_name": "Flyyti POS",
   "name": "Flyyti Mobile POS System",
   "icons": [
     {
-      "src": "https://gpclqttogygmqzoemooz.supabase.co/storage/v1/object/public/assets/icon-192.png",
+      "src": "/icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://gpclqttogygmqzoemooz.supabase.co/storage/v1/object/public/assets/icon-512.png",
+      "src": "/icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

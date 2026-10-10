@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    
+    <!-- PWA & Mobile Optimization -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Flyyti POS">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f172a">
+    
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="https://gpclqttogygmqzoemooz.supabase.co/storage/v1/object/public/assets/icon-192.png">
+
+    <title>Flyyti Mobile POS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+      :root {
+        --dark-blue: #0f172a; 
+        --emerald-green: #059669; 
+        --safe-area-inset-bottom: env(safe-area-inset-bottom);
+      }
+      body {
+        font-family: 'Tajawal', sans-serif;
+        background-color: #fcfcfc;
+        color: #0f172a;
+        -webkit-tap-highlight-color: transparent;
+        overscroll-behavior-y: contain;
+        overflow-x: hidden;
+        user-select: none;
+      }
+      
+      /* إجبار الأرقام الإنجليزية في كامل التطبيق */
+      * {
+        font-variant-numeric: lining-nums !important;
+        -moz-font-feature-settings: "lnum" !important;
+        -webkit-font-feature-settings: "lnum" !important;
+        font-feature-settings: "lnum" !important;
+      }
+
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* تنسيق الحقول لضمان الأرقام الإنجليزية والاتجاه الصحيح */
+      input[type=number], input[type=text], input[type=date], input[type=password] {
+        -moz-appearance: textfield;
+        direction: ltr !important;
+        unicode-bidi: plaintext !important;
+        text-align: center !important;
+        font-family: sans-serif !important; 
+      }
+
+      /* استثناء للبحث لجعل النص يمينياً مع بقاء الأرقام إنجليزية */
+      input[placeholder*="ابحث"], input[placeholder*="البحث"] {
+        text-align: right !important;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
+      .custom-scrollbar::-webkit-scrollbar-thumb { 
+        background: #cbd5e1; 
+        border-radius: 10px;
+      }
+
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      .animate-slide-in-right { animation: slideInRight 0.3s ease-out forwards; }
+      @keyframes slideInRight {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+      }
+
+      /* Fix for iOS Safari height issues */
+      .h-screen { height: 100dvh; }
+      
+      @media print {
+        .no-print { display: none !important; }
+        .print-only { display: block !important; width: 58mm; margin: 0; padding: 0; }
+        @page { size: 58mm auto; margin: 0; }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.93.2",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+    "@/": "./",
+    "path": "https://esm.sh/path@^0.12.7",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "xlsx": "https://esm.sh/xlsx@0.18.5"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

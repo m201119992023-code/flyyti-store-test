@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/reports/daily",
+      "schedule": "40 21 * * *"
+    },
+    {
+      "path": "/api/reports/monthly",
+      "schedule": "0 1 1 * *"
+    }
+  ]
+}

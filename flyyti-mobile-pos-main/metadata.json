@@ -1,0 +1,7 @@
+{
+  "name": "Flyyti Mobile POS",
+  "description": "A comprehensive RTL-supported mobile POS system for retail and services, featuring inventory management, detailed reporting, and secure profit distribution tracking.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
